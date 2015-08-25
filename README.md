@@ -18,6 +18,7 @@ The goal of this project is to create point clouds in real time using SFM (Struc
 
 ##Mac Install:
 1. run installOSX.sh
+
 	```bash
 	chmod u+x installOSX.sh
 	./installOSX.sh
