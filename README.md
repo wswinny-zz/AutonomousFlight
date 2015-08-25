@@ -4,11 +4,13 @@ The goal of this project is to create point clouds in real time using SFM (Struc
 
 ##Ubuntu Install:
 1. run install.sh
+
 	```bash
 	chmod u+x install.sh
 	./install.sh
 	```
 2. run makeProject.sh
+
 	```bash
 	chmod u+x makeProject.sh
 	./makeProject.sh
@@ -32,6 +34,7 @@ The goal of this project is to create point clouds in real time using SFM (Struc
 	sudo port -f activate zlib
 	``` 
 4. run makeProjectOSX.sh
+
 	```bash
 	chmod u+x makeProjectOSX.sh
 	./makeProjectOSX.sh
