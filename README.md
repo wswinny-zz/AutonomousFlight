@@ -11,7 +11,7 @@
 ```bash
 sudo port install gcc49
 ```
-you may also need to type the following as needed
+*you may also need to type the following as needed
 
 ```bash
 sudo port -f activate libedit
