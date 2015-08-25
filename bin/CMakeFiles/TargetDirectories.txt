@@ -1,2 +1,0 @@
-/home/swinny/Desktop/SFMProject/bin/CMakeFiles/ExploringSfMExec.dir
-/home/swinny/Desktop/SFMProject/bin/CMakeFiles/ExploringSfMLibrary.dir
