@@ -1,6 +1,6 @@
 # AutonomousFlight
 
-	The goal of this project is to create point clouds in real time using SFM (Structure From Motion) with a monocular camera in order to avoid obsticles. 
+The goal of this project is to create point clouds in real time using SFM (Structure From Motion) with a monocular camera in order to avoid obsticles. 
 
 ##Ubuntu Install:
 1. run install.sh
