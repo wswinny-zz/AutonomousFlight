@@ -30,54 +30,14 @@ include_directories(${SSBA_LIBRARY_DIR}/../)
 
 set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D__SFM__DEBUG__" )
 
-# Core functions of SfM
-file(GLOB SFM_LIB_SOURCES	
-	Distance.* 
-	Triangulation.* 
-	FindCameraMatrices.*
-	MultiCameraDistance.*
-	IDistance.*
-	MultiCameraPnP.*
-	Common.*
-	IFeatureMatcher.*
-	RichFeatureMatcher.*
-	OFFeatureMatcher.*
-	BundleAdjuster.*
-	GPUSURFFeatureMatcher.*
-	AbstractFeatureMatcher.*
-	SfMUpdateListener.*
-)
-
-add_library( ExploringSfMLibrary ${SFM_LIB_SOURCES} )
-if(MSVC)
-	set_target_properties(ExploringSfMLibrary PROPERTIES COMPILE_FLAGS "/openmp")
-	target_link_libraries(ExploringSfMLibrary V3D COLAMD )
-endif()
-if(APPLE)
-	# default is to build SSBA as static libs...
-	target_link_libraries(ExploringSfMLibrary 
-		"${SSBA_LIBRARY_DIR}/libV3D.a" 
-		"${SSBA_LIBRARY_DIR}/libCOLAMD.a"
-		)
-		
-	set_target_properties(ExploringSfMLibrary PROPERTIES COMPILE_FLAGS "-fopenmp")
-	set_target_properties(ExploringSfMLibrary PROPERTIES LINK_FLAGS "-fopenmp")
-endif()
-
-
 # UI part
-add_executable(ExploringSfMExec 
-	Visualization.cpp
-	Visualization.h
+add_executable(PclViewer 
 	main.cpp
 	)
 
 
-target_link_libraries(ExploringSfMExec 
-			ExploringSfMLibrary
+target_link_libraries(PclViewer 
 			${OpenCV_LIBS}
 			${PCL_LIBRARIES}
-			V3D
-			colamd
 			)
 

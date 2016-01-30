@@ -20,31 +20,41 @@ using namespace std;
 
 #include <opencv2/gpu/gpu.hpp>
 
-class VisualizerListener : public SfMUpdateListener {
-public:
-	void update(std::vector<cv::Point3d> pcld,
-				std::vector<cv::Vec3b> pcldrgb, 
-				std::vector<cv::Point3d> pcld_alternate,
-				std::vector<cv::Vec3b> pcldrgb_alternate, 
-				std::vector<cv::Matx34d> cameras) {
-		ShowClouds(pcld, pcldrgb, pcld_alternate, pcldrgb_alternate);
-		
-		vector<cv::Matx34d> v = cameras;
-		for(unsigned int i=0;i<v.size();i++) {
-			stringstream ss; ss << "camera" << i;
-			cv::Matx33f R; 
-			R(0,0)=v[i](0,0); R(0,1)=v[i](0,1); R(0,2)=v[i](0,2);
-			R(1,0)=v[i](1,0); R(1,1)=v[i](1,1); R(1,2)=v[i](1,2);
-			R(2,0)=v[i](2,0); R(2,1)=v[i](2,1); R(2,2)=v[i](2,2);
-			visualizerShowCamera(R,cv::Vec3f(v[i](0,3),v[i](1,3),v[i](2,3)),255,0,0,0.2,ss.str());
+class VisualizerListener : public SfMUpdateListener 
+{
+	public:
+		VisualizerListener(char * outfilename)
+		{
+			filename = outfilename;
 		}
-	}
+
+		void update(std::vector<cv::Point3d> pcld,
+					std::vector<cv::Vec3b> pcldrgb, 
+					std::vector<cv::Point3d> pcld_alternate,
+					std::vector<cv::Vec3b> pcldrgb_alternate, 
+					std::vector<cv::Matx34d> cameras) {
+			ShowClouds(pcld, filename, pcldrgb, pcld_alternate, pcldrgb_alternate);
+			
+			vector<cv::Matx34d> v = cameras;
+			for(unsigned int i=0;i<v.size();i++) {
+				stringstream ss; ss << "camera" << i;
+				cv::Matx33f R; 
+				R(0,0)=v[i](0,0); R(0,1)=v[i](0,1); R(0,2)=v[i](0,2);
+				R(1,0)=v[i](1,0); R(1,1)=v[i](1,1); R(1,2)=v[i](1,2);
+				R(2,0)=v[i](2,0); R(2,1)=v[i](2,1); R(2,2)=v[i](2,2);
+				visualizerShowCamera(R,cv::Vec3f(v[i](0,3),v[i](1,3),v[i](2,3)),255,0,0,0.2,ss.str());
+			}
+		}
+
+	private:
+		char * filename = "";
 };
 
 std::vector<cv::Mat> images;
 std::vector<std::string> images_names;
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv) 
+{
 	if (argc < 2) {
 		cerr << "USAGE: " << argv[0] << " <path_to_images> [use rich features (RICH/OF) = RICH] [use GPU (GPU/CPU) = GPU] [downscale factor = 1.0]" << endl;
 		return 0;
@@ -72,7 +82,7 @@ int main(int argc, char** argv) {
 	else
 		distance->use_gpu = (strcmp(argv[3], "GPU") == 0);
 	
-	cv::Ptr<VisualizerListener> visualizerListener = new VisualizerListener; //with ref-count
+	cv::Ptr<VisualizerListener> visualizerListener = new VisualizerListener(argv[1]); //with ref-count
 	distance->attach(visualizerListener);
 	RunVisualizationThread();
 

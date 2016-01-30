@@ -39,7 +39,8 @@ using namespace Eigen;
 void PopulatePCLPointCloud(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& mycloud,
 						   const vector<cv::Point3d>& pointcloud, 
 						   const std::vector<cv::Vec3b>& pointcloud_RGB,
-						   bool write_to_file = false
+						   const char * filename,
+						   bool write_to_file = true
 						   );
 
 #define pclp3(eigenv3f) pcl::PointXYZ(eigenv3f.x(),eigenv3f.y(),eigenv3f.z())
@@ -203,11 +204,12 @@ void RunVisualization(const vector<cv::Point3d>& pointcloud,
 					  const vector<cv::Point3d>& pointcloud1,
 					  const vector<cv::Vec3b>& pointcloud1_RGB) 
 {	
-	ShowClouds(pointcloud,pointcloud_RGB,pointcloud1,pointcloud1_RGB);
+	ShowClouds(pointcloud, "", pointcloud_RGB,pointcloud1,pointcloud1_RGB);
 	RunVisualizationOnly();	
 }
 
 void ShowClouds(const vector<cv::Point3d>& pointcloud,
+				const char * filename,
 				const vector<cv::Vec3b>& pointcloud_RGB,
 				const vector<cv::Point3d>& pointcloud1,
 				const vector<cv::Vec3b>& pointcloud1_RGB) 
@@ -216,8 +218,8 @@ void ShowClouds(const vector<cv::Point3d>& pointcloud,
 	cloud1.reset(new pcl::PointCloud<pcl::PointXYZRGB>);
 	orig_cloud.reset(new pcl::PointCloud<pcl::PointXYZRGB>);
     
-	PopulatePCLPointCloud(cloud,pointcloud,pointcloud_RGB);
-	PopulatePCLPointCloud(cloud1,pointcloud1,pointcloud1_RGB);
+	PopulatePCLPointCloud(cloud,pointcloud,pointcloud_RGB, filename);
+	PopulatePCLPointCloud(cloud1,pointcloud1,pointcloud1_RGB, filename);
 	copyPointCloud(*cloud,*orig_cloud);
 	cloud_to_show_name = "";
 	show_cloud = true;
@@ -236,7 +238,7 @@ void ShowCloud(const vector<cv::Point3d>& pointcloud,
 				const vector<cv::Vec3b>& pointcloud_RGB, 
 				const std::string& name) {
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr newcloud(new pcl::PointCloud<pcl::PointXYZRGB>);
-	PopulatePCLPointCloud(newcloud,pointcloud,pointcloud_RGB);
+	PopulatePCLPointCloud(newcloud,pointcloud,pointcloud_RGB, "pointcloud.pcd");
 	ShowCloud(newcloud,name);
 }
 
@@ -304,6 +306,7 @@ void WaitForVisualizationThread() {
 void PopulatePCLPointCloud(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& mycloud,
 						   const vector<cv::Point3d>& pointcloud, 
 						   const std::vector<cv::Vec3b>& pointcloud_RGB,
+						   const char * filename,
 						   bool write_to_file
 						   )
 	//Populate point cloud
@@ -364,7 +367,21 @@ void PopulatePCLPointCloud(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr& mycloud
 	if (write_to_file) {
 		//pcl::PLYWriter pw;
 		//pw.write("pointcloud.ply",*mycloud);
+
+		char * filepath = addString("pointcloud.pcd", filename);
+		std::cout << "Filename is: " << filepath << "\n";
+
 		pcl::PCDWriter pw;
-		pw.write("pointcloud.pcd",*mycloud);
+		pw.write(filepath, *mycloud);
+
+		delete filepath;
 	}
 }
+
+char* addString(const char* addThis, const char* toThis)
+{
+    char* destination = (char*)malloc( strlen( addThis ) + strlen( toThis ) + 1 );
+    strcpy( destination, toThis );
+    strcat( destination, addThis );
+    return destination;
+} 
